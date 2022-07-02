@@ -1,6 +1,8 @@
-package com.bell_kenz.firstcomposeproject
+package com.bell_kenz.firstcomposeproject.ui.theme.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateContentSize
@@ -21,18 +23,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
+import com.bell_kenz.firstcomposeproject.R
 import com.bell_kenz.firstcomposeproject.ui.theme.FirstComposeProjectTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 class MainActivity : ComponentActivity() {
+    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
         setContent {
+            rememberSystemUiController().apply {
+                isStatusBarVisible = false
+            }
             FirstComposeProjectTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
@@ -60,8 +70,14 @@ fun Conversations(messages: List<Message>) {
 
 @Composable
 fun MessageCard(message: Message) {
+    val context = LocalContext.current
+
     Row(
-        Modifier.padding(8.dp)
+        Modifier
+            .padding(8.dp)
+            .clickable {
+            }
+           
     ) {
         Image(
             painterResource(id = R.drawable.anya),
@@ -69,7 +85,11 @@ fun MessageCard(message: Message) {
             Modifier
                 .size(56.dp)
                 .clip(CircleShape)
-                .border(width = 1.dp, color = Color.Cyan, shape = CircleShape),
+                .border(width = 1.dp, color = Color.Black, shape = CircleShape)
+                .clickable {
+                    context.startActivity(Intent(context,DetailsActivity::class.java))
+                }
+            ,
             contentScale = ContentScale.Crop
         )
         Spacer(Modifier.size(3.dp))
@@ -88,9 +108,13 @@ fun MessageCard(message: Message) {
             Card(
                 shape = RoundedCornerShape(4.dp),
                 elevation = 2.dp,
-                modifier = Modifier.fillMaxWidth(fraction = 0.4f)
-                    .animateContentSize().padding(1.dp).
-                       clickable { isExpanded = !isExpanded }) {
+                modifier = Modifier
+                    .fillMaxWidth(fraction = 0.4f)
+                    .animateContentSize()
+                    .padding(1.dp)
+                    .clickable {
+                        isExpanded = !isExpanded
+                    }) {
                 Text(
                     text = message.content,
                     color = colorResource(id = R.color.black),
@@ -105,6 +129,15 @@ fun MessageCard(message: Message) {
 
 
 }
+
+
+@Composable
+private fun goToDetailsActivity(message: Message){
+    val context = LocalContext.current
+    context.startActivity(Intent(context,DetailsActivity::class.java))
+
+}
+
 
 private fun getMessages(): List<Message> {
 
@@ -130,7 +163,7 @@ fun DefaultPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.background
         ) {
-//            MessageCard("Android")
+
         }
 
     }
