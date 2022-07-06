@@ -1,4 +1,4 @@
-package com.bell_kenz.firstcomposeproject.ui.activities
+package com.bell_kenz.firstcomposeproject.ui.domain
 
 class Message(
     val sender:String,
